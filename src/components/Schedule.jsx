@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getCalendarsWithCache } from '../utils/ical';
 import { formatRelativeDate } from '../utils/time';
+import { estimateDuration, estimatePrice, formatDuration } from '../config/estimateConfig';
 
 // Options configuration
 const LENGTH_OPTIONS = ['本甲', '短甲', '中长', '长甲', '延长', '待定'];
@@ -77,7 +78,7 @@ export default function Schedule({ theme }) {
       ? (form.style.length > 0 ? form.style.join('/') : '待定')
       : (form.style || '待定');
 
-    const text = `你好 WT NAIL STUDIO，我想预约：
+    const text = `你好 Bookingcal，我想预约：
 日期：${dateStr} ${timeStr}
 长度：${form.length || '待定'}
 款式：${styleStr}
@@ -237,14 +238,22 @@ export default function Schedule({ theme }) {
     return `（${rel}）`;
   };
 
+  // Calculate estimate duration and price for display
+  const getEstimateStr = () => {
+    const duration = estimateDuration(form.length, form.style, form.remove);
+    const price = estimatePrice(form.length, form.style, form.remove);
+    const durStr = formatDuration(duration);
+    return `预计 ${durStr} · ¥${price} 起`;
+  };
+
   return (
     <div className="min-h-screen flex flex-col pb-32 dark:text-[#efefee] text-[#1a1a1a] dark:bg-[#101012] bg-[#f6f6f4] transition-colors duration-300">
       <div className="pt-0 pb-4 dark:bg-[#101012] bg-[#f6f6f4] transition-colors duration-300 relative z-50">
         <img
-          src="/assets/topimg.png"
+          src="/assets/topimg.webp"
           className="w-full block relative z-50 opacity-100 filter-none mix-blend-normal"
           style={{ filter: 'none', opacity: 1, mixBlendMode: 'normal' }}
-          alt="WT NAIL STUDIO"
+          alt="Bookingcal"
         />
       </div>
 
@@ -343,7 +352,7 @@ export default function Schedule({ theme }) {
             ))}
             <div className="h-10"></div>
             <div className="text-center text-xs dark:text-white/50 text-black/50 py-10 flex items-center justify-center">
-              感谢支持 WT NAIL STUDIO！
+              感谢支持 Bookingcal！
             </div>
           </div>
         )}
@@ -400,6 +409,9 @@ export default function Schedule({ theme }) {
                {selectedSlot?.slot.isTight && (
                  <span className="ml-2 text-gray-900 dark:text-white font-bold">时间紧张，只能做简单点的哦</span>
                )}
+             </span>
+             <span className="text-xs text-[#8b5a2b] dark:text-[#a4774a] font-medium mt-0.5">
+               {getEstimateStr()}
              </span>
           </div>
           <button onClick={hideModal} className="dark:text-white/50 text-black/50 text-xl px-2">×</button>

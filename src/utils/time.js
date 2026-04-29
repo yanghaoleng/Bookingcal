@@ -28,5 +28,5 @@ export function formatOrderText(dateObj, slotLabel, lengthText, styleText, remov
   const removePart = removeText || '';
   const remark = remarkText ? `备注：${remarkText}` : '备注：无';
 
-  return `预约${m}月${d}日${slotLabel}（${relative}）做${lenPart}${stylePart}，${removePart}，${remark}。静候 WT NAIL STUDIO 安排！`;
+  return `预约${m}月${d}日${slotLabel}（${relative}）做${lenPart}${stylePart}，${removePart}，${remark}。静候 Bookingcal 安排！`;
 }
