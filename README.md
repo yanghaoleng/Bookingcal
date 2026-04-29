@@ -31,6 +31,12 @@ npm run dev
 
 改完后重新部署即可生效。
 
+## 日历来源建议
+
+- iOS 用户：可直接使用 Apple 日历里的共享链接（.ics）作为工作日历来源。
+- 安卓用户：推荐使用 Outlook 账户维护日历，然后在电脑网页端生成并分享 .ics 链接接入系统。
+- 公共节假日：可使用公开节假日 .ics 链接作为 `type=holiday`。
+
 ## 备注
 
 - 资源路径示例：顶部图为 `/assets/topimg.webp`，favicon 为 `/assets/favcon.webp`。
