@@ -2,7 +2,7 @@
 // 核心逻辑：所有时间计算统一转换为 UTC 时间戳（毫秒）进行比较
 // 定义 "Shanghai Time" 为 UTC+8
 
-const WORK_CAL_URL = 'https://outlook.live.com/owa/calendar/00000000-0000-0000-0000-000000000000/48be9371-5a7c-4c58-8a64-4268b3012841/cid-06E665F8FD44A075/calendar.ics';
+const WORK_CAL_URL = import.meta.env.VITE_WORK_CAL_URL;
 const HOLIDAY_CAL_URL = 'https://calendars.icloud.com/holidays/cn_zh.ics/';
 
 const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000;

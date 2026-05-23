@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
   let targetUrl = '';
   if (type === 'work') {
-    targetUrl = 'https://outlook.live.com/owa/calendar/00000000-0000-0000-0000-000000000000/48be9371-5a7c-4c58-8a64-4268b3012841/cid-06E665F8FD44A075/calendar.ics';
+    targetUrl = process.env.VITE_WORK_CAL_URL;
   } else if (type === 'holiday') {
     targetUrl = 'https://calendars.icloud.com/holidays/cn_zh.ics/';
   } else {
