@@ -37,6 +37,19 @@ npm run dev
 - 安卓用户：推荐使用 Outlook 账户维护日历，然后在电脑网页端生成并分享 .ics 链接接入系统。
 - 公共节假日：可使用公开节假日 .ics 链接作为 `type=holiday`。
 
+## 部署（Vercel）
+
+本项目推荐部署到 Vercel。部署前需要在 Vercel 项目设置中添加环境变量：
+
+| Key | Value | 说明 |
+|-----|-------|------|
+| `VITE_WORK_CAL_URL` | 你的 Outlook 日历 .ics 链接 | 工作日历订阅地址 |
+
+添加步骤：
+1. 进入 Vercel 项目 → Settings → Environment Variables
+2. 添加 `VITE_WORK_CAL_URL`，值为你的日历 .ics 链接
+3. 重新部署项目使环境变量生效
+
 ## 备注
 
 - 资源路径示例：顶部图为 `/assets/topimg.webp`，favicon 为 `/assets/favcon.webp`。
