@@ -1,5 +1,4 @@
 import React from 'react'
-import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import Schedule from './components/Schedule'
 import useTheme from './hooks/useTheme'
@@ -16,7 +15,6 @@ function App() {
       <div className="w-full max-w-[440px] min-w-[375px] dark:bg-[#101012] bg-[#fff7f4] shadow-2xl overflow-hidden relative transition-colors duration-300">
         <Schedule theme={theme} />
       </div>
-      {enableVercelMetrics && <Analytics />}
       {enableVercelMetrics && <SpeedInsights />}
     </div>
   )
