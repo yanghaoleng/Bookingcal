@@ -280,7 +280,7 @@ export default function Schedule({ theme }) {
         )}
 
         {isMock && !loading && (
-          <div className="mb-5 -mt-1 rounded-2xl border border-[#e8cbc3] bg-[#fff7f4] px-4 py-3 text-[11px] leading-relaxed text-[#6f4139] dark:border-white/10 dark:bg-white/[0.06] dark:text-white/70">
+          <div className="mt-3 mb-5 rounded-2xl border border-[#e8cbc3] bg-[#fff7f4] px-4 py-3 text-[11px] leading-relaxed text-[#6f4139] dark:border-white/10 dark:bg-white/[0.06] dark:text-white/70">
             <span>当前为 Demo 演示数据</span>
             <button
               type="button"
