@@ -6,6 +6,7 @@ const WORK_CAL_URL = import.meta.env.VITE_WORK_CAL_URL;
 const HOLIDAY_CAL_URL = 'https://calendars.icloud.com/holidays/cn_zh.ics/';
 
 const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000;
+const DEMO_MODE = true;
 
 /**
  * 将 .ics 时间字符串解析为 UTC 时间戳 (ms)
@@ -157,6 +158,74 @@ export const TIME_SLOTS = [
   { key: 'afternoon', label: '下午', start: '15:00', end: '18:00' },
   { key: 'evening', label: '晚上', start: '18:00', end: '22:00' }
 ];
+
+const DEMO_DAYS = 42;
+const DEMO_FIRST_WEEK_FREE = {
+  1: ['evening'],
+  3: ['noon'],
+  5: ['afternoon']
+};
+const DEMO_SECOND_WEEK_FREE = {
+  7: ['morning'],
+  8: ['afternoon'],
+  9: ['noon', 'evening'],
+  10: ['afternoon'],
+  11: ['morning'],
+  12: ['noon'],
+  13: ['afternoon', 'evening']
+};
+const DEMO_LATER_BUSY = {
+  14: ['morning'],
+  17: ['evening'],
+  20: ['noon'],
+  23: ['afternoon'],
+  27: ['morning', 'noon'],
+  31: ['evening'],
+  35: ['afternoon'],
+  39: ['noon']
+};
+
+function getDemoSlotStatus(dayIndex, slotKey) {
+  if (dayIndex < 7) {
+    return DEMO_FIRST_WEEK_FREE[dayIndex]?.includes(slotKey) ? 'free' : 'busy';
+  }
+
+  if (dayIndex < 14) {
+    return DEMO_SECOND_WEEK_FREE[dayIndex]?.includes(slotKey) ? 'free' : 'busy';
+  }
+
+  return DEMO_LATER_BUSY[dayIndex]?.includes(slotKey) ? 'busy' : 'free';
+}
+
+function getDemoSchedule() {
+  const targetDays = getDateRangeDays(DEMO_DAYS);
+  const schedule = targetDays.map((day, dayIndex) => {
+    const label = `${day.m}月${day.d}日`;
+    const weekday = '日一二三四五六'.charAt(day.weekdayIdx);
+    const key = `${day.y}-${day.m}-${day.d}`;
+
+    const slots = TIME_SLOTS.map(slot => ({
+      key: slot.key,
+      label: slot.label,
+      start: slot.start,
+      end: slot.end,
+      displayTime: `${slot.start}～${slot.end}`,
+      status: getDemoSlotStatus(dayIndex, slot.key),
+      isTight: false
+    }));
+
+    return {
+      date: day.dateObj,
+      key,
+      label,
+      weekday,
+      holidayName: '',
+      slots
+    };
+  });
+
+  return { workEvents: [], holidayEvents: [], schedule, isDemo: true, isMock: true };
+}
 
 // 检查冲突并返回可用时间段
 function getSlotAvailability(day, slot, events) {
@@ -588,6 +657,10 @@ function getMockSchedule() {
 }
 
 export async function getCalendarsWithCache() {
+  if (DEMO_MODE) {
+    return getDemoSchedule();
+  }
+
   const now = Date.now();
   try {
     const cachedStr = localStorage.getItem(CACHE_KEY);

@@ -28,6 +28,7 @@ export default function Schedule({ theme }) {
   
   // Modal state
   const [showModal, setShowModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [form, setForm] = useState({
     length: '',
     style: [], // Changed to array for multiselect
@@ -78,7 +79,7 @@ export default function Schedule({ theme }) {
       ? (form.style.length > 0 ? form.style.join('/') : '待定')
       : (form.style || '待定');
 
-    const text = `你好 Bookingcal，我想预约：
+    const text = `你好 屁奇Peachnail，我想预约：
 日期：${dateStr} ${timeStr}
 长度：${form.length || '待定'}
 款式：${styleStr}
@@ -162,7 +163,7 @@ export default function Schedule({ theme }) {
   useEffect(() => {
     const handleGlobalClick = (e) => {
       // If clicking inside a slot or the bottom bar or modal, do nothing
-      if (e.target.closest('.slot-item') || e.target.closest('.bottom-bar') || e.target.closest('.modal-container') || e.target.closest('.theme-toggle')) {
+      if (e.target.closest('.slot-item') || e.target.closest('.bottom-bar') || e.target.closest('.modal-container') || e.target.closest('.contact-modal') || e.target.closest('.demo-contact-trigger') || e.target.closest('.theme-toggle')) {
         return;
       }
       setSelectedSlot(null);
@@ -180,6 +181,10 @@ export default function Schedule({ theme }) {
 
   const hideModal = () => {
     setShowModal(false);
+  };
+
+  const hideContactModal = () => {
+    setShowContactModal(false);
   };
 
   const updateForm = (field, value) => {
@@ -224,6 +229,15 @@ export default function Schedule({ theme }) {
     }
   };
 
+  const copyDeveloperWechat = async () => {
+    try {
+      await navigator.clipboard.writeText('yanghaoleng');
+      showToast('微信号已复制');
+    } catch (err) {
+      showToast('复制失败，请手动复制');
+    }
+  };
+
   const showToast = (msg) => {
     setToast({ message: msg });
     setTimeout(() => setToast(null), 2000);
@@ -247,13 +261,13 @@ export default function Schedule({ theme }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pb-32 dark:text-[#efefee] text-[#1a1a1a] dark:bg-[#101012] bg-[#f6f6f4] transition-colors duration-300">
-      <div className="pt-0 pb-4 dark:bg-[#101012] bg-[#f6f6f4] transition-colors duration-300 relative z-50">
+    <div className="min-h-screen flex flex-col pb-32 dark:text-[#efefee] text-[#1a1a1a] dark:bg-[#101012] bg-[#fff7f4] transition-colors duration-300">
+      <div className="pt-0 pb-4 dark:bg-[#101012] bg-[#fff7f4] transition-colors duration-300 relative z-50">
         <img
           src="/assets/topimg.webp"
           className="w-full block relative z-50 opacity-100 filter-none mix-blend-normal"
           style={{ filter: 'none', opacity: 1, mixBlendMode: 'normal' }}
-          alt="Bookingcal"
+          alt="屁奇Peachnail"
         />
       </div>
 
@@ -266,10 +280,19 @@ export default function Schedule({ theme }) {
         )}
 
         {isMock && !loading && (
-          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center gap-2">
-            <span className="text-red-400 text-xs flex-1">
-              ⚠️ 获取真实日程失败，当前显示为演示数据。请检查网络或后端代理配置。
-            </span>
+          <div className="mb-5 -mt-1 rounded-2xl border border-[#e8cbc3] bg-[#fff7f4] px-4 py-3 text-[11px] leading-relaxed text-[#6f4139] dark:border-white/10 dark:bg-white/[0.06] dark:text-white/70">
+            <span>当前为 Demo 演示数据</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowContactModal(true);
+              }}
+              className="demo-contact-trigger ml-2 font-semibold text-[#a24e48] underline-offset-4 hover:underline dark:text-[#f0b2a6]"
+            >
+              配置真实数据请联系
+              <span aria-hidden="true" className="ml-1">→</span>
+            </button>
           </div>
         )}
 
@@ -300,7 +323,7 @@ export default function Schedule({ theme }) {
                     <span className="text-lg font-semibold">{item.label}</span>
                     <span className="dark:text-white/70 text-black/70">周{item.weekday}</span>
                     {index === 0 && (
-                      <span className="ml-2 px-2 py-0.5 rounded-full text-xs bg-[#5b2327] text-[#f6f6f4]/90 dark:bg-[#7a2f34] dark:text-white/90">
+                      <span className="ml-2 px-2 py-0.5 rounded-full text-xs bg-[#a24e48] text-[#fff7f4]/95 dark:bg-[#c97368] dark:text-white/95">
                         今天
                       </span>
                     )}
@@ -330,18 +353,18 @@ export default function Schedule({ theme }) {
                           transition-all duration-300 transform cursor-pointer
                           ${isBusy 
                             ? 'dark:bg-white/5 bg-[#ececea] dark:border-white/15 border-black/10 opacity-50 cursor-not-allowed' 
-                            : 'bg-white text-[#2a1a0e] border-2 border-[#8b5a2b]/60 hover:border-[#8b5a2b]/80 hover:bg-[#fafafa] dark:bg-[#2b1a12] dark:text-[#f6f6f4] dark:border-2 dark:border-[#6f4a2c]/70 dark:hover:border-[#a4774a]/70 dark:hover:bg-[#24150f] shadow-[0_2px_0_rgba(0,0,0,0.08)]'
+                            : 'bg-white text-[#5f342f] border-2 border-[#d7837c]/70 hover:border-[#c66d66] hover:bg-[#fffdfc] dark:bg-[#2b1718] dark:text-[#fff7f4] dark:border-2 dark:border-[#a95f59]/70 dark:hover:border-[#f0b2a6]/75 dark:hover:bg-[#241315] shadow-[0_2px_0_rgba(95,52,47,0.08)]'
                           }
-                          ${isActive ? '!opacity-100 shadow-lg animate-float !bg-[#8b5a2b] !border-[#8b5a2b] ring-2 ring-[#8b5a2b]/15 dark:!bg-[#3a2416] dark:!border-[#a4774a]/70 dark:ring-[#a4774a]/20' : ''}
+                          ${isActive ? '!opacity-100 shadow-lg animate-float !bg-[#a24e48] !border-[#a24e48] ring-2 ring-[#a24e48]/15 dark:!bg-[#4a2426] dark:!border-[#f0b2a6]/70 dark:ring-[#f0b2a6]/20' : ''}
                           ${isShaking ? 'shake-feedback' : ''}
                         `}>
-                        <span className={`text-base font-bold block mb-0.5 ${isActive ? 'text-[#f5efc3] dark:text-[#f6f6f4]' : (isBusy ? 'dark:text-white/60 text-black/50' : (isFree ? 'text-[#2a1a0e] dark:text-[#f6f6f4]' : ''))}`}>
+                        <span className={`text-base font-bold block mb-0.5 ${isActive ? 'text-[#fff7f4] dark:text-[#fff7f4]' : (isBusy ? 'dark:text-white/60 text-black/50' : (isFree ? 'text-[#5f342f] dark:text-[#fff7f4]' : ''))}`}>
                           {slot.label}
                         </span>
-                        <span className={`text-[10px] whitespace-nowrap block ${isBusy ? 'dark:text-white/40 text-black/40' : (isFree ? 'text-[#2a1a0e]/60 dark:text-[#f6f6f4]/70' : '')} ${isActive ? '!text-[#f5efc3]/70 dark:!text-[#f6f6f4]/75' : ''}`}>
+                        <span className={`text-[10px] whitespace-nowrap block ${isBusy ? 'dark:text-white/40 text-black/40' : (isFree ? 'text-[#5f342f]/65 dark:text-[#fff7f4]/70' : '')} ${isActive ? '!text-[#fff7f4]/75 dark:!text-[#fff7f4]/75' : ''}`}>
                           {slot.displayTime || `${slot.start}～${slot.end}`}
                         </span>
-                        <span className={`text-[10px] block mt-0.5 ${isBusy ? 'dark:text-white/40 text-black/40' : (isFree ? 'text-[#2a1a0e]/70 dark:text-[#f6f6f4]/80' : '')} ${isActive ? '!text-[#f5efc3]/85 dark:!text-[#f6f6f4]/85' : ''}`}>
+                        <span className={`text-[10px] block mt-0.5 ${isBusy ? 'dark:text-white/40 text-black/40' : (isFree ? 'text-[#5f342f]/75 dark:text-[#fff7f4]/80' : '')} ${isActive ? '!text-[#fff7f4]/85 dark:!text-[#fff7f4]/85' : ''}`}>
                           {isBusy ? '不可预约' : '可预约'}
                         </span>
                       </div>
@@ -352,7 +375,7 @@ export default function Schedule({ theme }) {
             ))}
             <div className="h-10"></div>
             <div className="text-center text-xs dark:text-white/50 text-black/50 py-10 flex items-center justify-center">
-              感谢支持 Bookingcal！
+              感谢支持 屁奇Peachnail！
             </div>
           </div>
         )}
@@ -368,7 +391,7 @@ export default function Schedule({ theme }) {
       )}
 
       {/* Bottom Booking Bar */}
-      <div className={`bottom-bar fixed inset-x-0 bottom-0 p-4 pb-8 dark:bg-[#101012] bg-[#f6f6f4] border-t dark:border-white/10 border-black/10 z-50 flex items-center justify-between safe-area-bottom max-w-[440px] mx-auto min-w-[375px] transition-all duration-300 transform ${selectedSlot ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
+      <div className={`bottom-bar fixed inset-x-0 bottom-0 p-4 pb-8 dark:bg-[#101012] bg-[#fff7f4] border-t dark:border-white/10 border-black/10 z-50 flex items-center justify-between safe-area-bottom max-w-[440px] mx-auto min-w-[375px] transition-all duration-300 transform ${selectedSlot ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
         {displaySlot && (
           <>
             <div className="flex flex-col">
@@ -397,9 +420,46 @@ export default function Schedule({ theme }) {
         ></div>
       )}
 
+      {showContactModal && (
+        <div
+          className="fixed inset-0 bg-black/55 z-[110]"
+          onClick={hideContactModal}
+        ></div>
+      )}
+
+      <div
+        className={`contact-modal fixed left-1/2 top-1/2 z-[120] w-[calc(100%-40px)] max-w-[360px] -translate-x-1/2 rounded-2xl border border-black/10 bg-[#fffaf8] p-5 text-[#1a1a1a] shadow-2xl transition-all duration-200 dark:border-white/10 dark:bg-[#181416] dark:text-[#efefee] ${showContactModal ? '-translate-y-1/2 scale-100 opacity-100' : 'pointer-events-none -translate-y-[45%] scale-95 opacity-0'}`}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <div className="text-base font-semibold">配置真实数据</div>
+          <button
+            type="button"
+            onClick={hideContactModal}
+            className="h-8 w-8 rounded-full text-xl leading-none text-black/45 transition-colors hover:bg-black/5 hover:text-black/75 dark:text-white/45 dark:hover:bg-white/10 dark:hover:text-white/75"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div className="rounded-xl bg-[#f6ece8] px-4 py-3 text-sm leading-7 dark:bg-white/[0.06]">
+          <div>开发者小杨</div>
+          <div>
+            微信号：
+            <span className="font-semibold tracking-wide text-[#a24e48] dark:text-[#f0b2a6]">yanghaoleng</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={copyDeveloperWechat}
+          className="mt-4 h-10 w-full rounded-full bg-[#1f1f22] text-sm font-bold text-[#f6f6f4] shadow-lg transition-transform active:scale-95 dark:bg-[#e9e9e6] dark:text-[#151518]"
+        >
+          复制微信号
+        </button>
+      </div>
+
       {/* Modal Content */}
       <div 
-        className={`modal-container fixed inset-x-0 bottom-0 dark:bg-[#101012] bg-[#f6f6f4] border-t dark:border-white/10 border-black/10 rounded-t-2xl z-[100] transform transition-transform duration-300 flex flex-col max-h-[90vh] dark:text-[#efefee] text-[#1a1a1a] max-w-[440px] mx-auto min-w-[375px] ${showModal ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`modal-container fixed inset-x-0 bottom-0 dark:bg-[#101012] bg-[#fff7f4] border-t dark:border-white/10 border-black/10 rounded-t-2xl z-[100] transform transition-transform duration-300 flex flex-col max-h-[90vh] dark:text-[#efefee] text-[#1a1a1a] max-w-[440px] mx-auto min-w-[375px] ${showModal ? 'translate-y-0' : 'translate-y-full'}`}
       >
         <div className="p-4 flex items-center justify-between border-b dark:border-white/10 border-black/10">
           <div className="text-base font-medium flex flex-col">
@@ -410,7 +470,7 @@ export default function Schedule({ theme }) {
                  <span className="ml-2 text-gray-900 dark:text-white font-bold">时间紧张，只能做简单点的哦</span>
                )}
              </span>
-             <span className="text-xs text-[#8b5a2b] dark:text-[#a4774a] font-medium mt-0.5">
+             <span className="text-xs text-[#a24e48] dark:text-[#f0b2a6] font-medium mt-0.5">
                {getEstimateStr()}
              </span>
           </div>
